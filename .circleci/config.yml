@@ -43,6 +43,7 @@ jobs:
       - run:
           name: sam-deploy
           command: |
+            source .venv/bin/activate
             sam --version
 
 workflows:
