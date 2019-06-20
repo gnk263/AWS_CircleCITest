@@ -29,7 +29,7 @@ jobs: # 1回の実行の基本作業単位
             - "/usr/local/lib/python3.6/site-packages"
       - run:
           command: |
-            pipenv shell
+            source .venv/bin/activate
             python --version
             aws --version
             sam --version
