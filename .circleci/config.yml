@@ -5,7 +5,7 @@ jobs: # 1回の実行の基本作業単位
     working_directory: ~/circleci-demo-python-django
     docker: # Docker でステップを実行します
       # CircleCI Python イメージは https://hub.docker.com/r/circleci/python/ で入手できます
-      - image: circleci/python:3.6.4
+      - image: circleci/python:3.6.8
         environment: # プライマリコンテナの環境変数
           PIPENV_VENV_IN_PROJECT: true
           DATABASE_URL: postgresql://root@localhost/circle_test?sslmode=disable
@@ -16,13 +16,13 @@ jobs: # 1回の実行の基本作業単位
       - run: sudo chown -R circleci:circleci /usr/local/lib/python3.6/site-packages
       - restore_cache:
       # 依存関係キャッシュについては https://circleci.com/docs/ja/2.0/caching/ をお読みください
-          key: deps9-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
+          key: v1-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
       - run:
           command: |
             sudo pip install pipenv
             pipenv install
       - save_cache: # Pipfile のチェックサムをキャッシュキーとして使用して、Python の依存関係をキャッシュします
-          key: deps9-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
+          key: v1-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
           paths:
             - ".venv"
             - "/usr/local/bin"
