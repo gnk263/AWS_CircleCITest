@@ -7,28 +7,35 @@ executors:
           PIPENV_VENV_IN_PROJECT: true
     working_directory: ~/CircleCIDeploySample
 
+commands:
+  restore:
+    steps:
+      - restore_cache:
+          key: CircleCIDeploySample-v3-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
+  save:
+    steps:
+      - save_cache:
+          paths:
+            - ".venv"
+          key: CircleCIDeploySample-v3-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
+
 jobs:
   setup:
     executor: my-executor
     steps:
       - checkout
-      - restore_cache:
-          key: CircleCIDeploySample-v2-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
+      - restore
       - run:
           name: install
           command: |
             pip install pipenv
             pipenv install
-      - save_cache:
-          paths:
-            - ".venv"
-          key: CircleCIDeploySample-v2-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
+      - save
   build:
     executor: my-executor
     steps:
       - checkout
-      - restore_cache:
-          key: CircleCIDeploySample-v2-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
+      - restore
       - run:
           name: sam-build
           command: |
@@ -38,8 +45,7 @@ jobs:
     executor: my-executor
     steps:
       - checkout
-      - restore_cache:
-          key: CircleCIDeploySample-v2-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
+      - restore
       - run:
           name: sam-deploy
           command: |
