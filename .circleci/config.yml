@@ -47,6 +47,14 @@ jobs:
             source .venv/bin/activate
             aws --version
             echo << parameters.system-env >>
+            echo $KEY_DEV
+            echo $KEY_PROD
+            if [ << parameters.system-env >> = "dev" ]; then
+              export KEY=$KEY_DEV
+            else
+              export KEY=$KEY_PROD
+            fi
+            echo $KEY
   deploy:
     executor: my-executor
     parameters:
@@ -63,6 +71,14 @@ jobs:
             source .venv/bin/activate
             sam --version
             echo << parameters.system-env >>
+            echo $KEY_DEV
+            echo $KEY_PROD
+            if [ << parameters.system-env >> = "dev" ]; then
+              export KEY=$KEY_DEV
+            else
+              export KEY=$KEY_PROD
+            fi
+            echo $KEY
 
 workflows:
   version: 2.1
@@ -79,6 +95,6 @@ workflows:
           requires:
             - setup
       - deploy:
-          system-env: dev
+          system-env: prod
           requires:
             - build
