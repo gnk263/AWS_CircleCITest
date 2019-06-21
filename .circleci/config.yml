@@ -33,6 +33,11 @@ jobs:
       - save
   build:
     executor: my-executor
+    parameters:
+      system-env:
+        type: enum
+        enum: ["prod", "dev"]
+        default: "dev"
     steps:
       - checkout
       - restore
@@ -41,8 +46,14 @@ jobs:
           command: |
             source .venv/bin/activate
             aws --version
+            echo << parameters.system-env >>
   deploy:
     executor: my-executor
+    parameters:
+      system-env:
+        type: enum
+        enum: ["prod", "dev"]
+        default: "dev"
     steps:
       - checkout
       - restore
@@ -51,6 +62,7 @@ jobs:
           command: |
             source .venv/bin/activate
             sam --version
+            echo << parameters.system-env >>
 
 workflows:
   version: 2.1
@@ -63,8 +75,10 @@ workflows:
                 - master
                 - develop
       - build:
+          system-env: dev
           requires:
             - setup
       - deploy:
+          system-env: dev
           requires:
             - build
